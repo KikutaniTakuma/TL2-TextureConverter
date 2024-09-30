@@ -2,6 +2,8 @@
 
 #include <filesystem>
 
+#include "external/DirectXTex/DirectXTex.h"
+
 class TextureConverter {
 public:
 	TextureConverter() = default;
@@ -17,4 +19,11 @@ public:
 
 private:
 	void LoadWICTextureFromFile_(const std::filesystem::path& filePath);
+	void SaveDDSTextureToFile_();
+
+private:
+	DirectX::TexMetadata metaData_;
+	DirectX::ScratchImage scratchImage_;
+
+	std::filesystem::path filePath_;
 };
