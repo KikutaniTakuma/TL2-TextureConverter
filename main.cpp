@@ -1,9 +1,16 @@
-﻿#include <iostream>
+#include <iostream>
 #include <cstdlib>
 
-int main() {
-	std::cout << "Hello Wolrd!" << std::endl;
+#include <string>
 
+int main(int32_t args, char* argv[]) {
+	std::string argStr;
+
+	for (int32_t i = 0; i < args; i++) {
+		argStr += argv[i];
+	}
+
+	std::cout << argStr << std::endl;
 
 	system("pause");
 
