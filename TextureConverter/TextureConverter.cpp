@@ -22,7 +22,7 @@ void TextureConverter::LoadWICTextureFromFile_(const std::filesystem::path& file
 void TextureConverter::SaveDDSTextureToFile_() {
 	metaData_.format = DirectX::MakeSRGB(metaData_.format);
 	
-	std::wstring outputFilePath = filePath_.parent_path().wstring() + filePath_.stem().wstring() + L".dds";
+	std::wstring outputFilePath = filePath_.parent_path().wstring() + L"/" + filePath_.stem().wstring() + L".dds";
 
 	auto hr = DirectX::SaveToDDSFile(
 		scratchImage_.GetImages(),
