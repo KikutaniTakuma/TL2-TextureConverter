@@ -1,18 +1,34 @@
 #include <iostream>
 #include <cstdlib>
 
-#include <string>
+#include "TextureConverter/TextureConverter.h"
 
-int main(int32_t args, char* argv[]) {
-	std::string argStr;
+#include <cassert>
 
-	for (int32_t i = 0; i < args; i++) {
-		argStr += argv[i];
-	}
+#include <Windows.h>
+#undef max
+#undef min
 
-	std::cout << argStr << std::endl;
+enum Argument {
+	kApplicationPath,
+	kFilePath,
+
+	kNumArgument
+};
+
+
+int main(int32_t argc, char* argv[]) {
+	assert(argc <= kNumArgument);
+
+	HRESULT hr = CoInitializeEx(nullptr, COINIT_MULTITHREADED);
+	assert(SUCCEEDED(hr));
+
+	TextureConverter converter;
+
+	converter.ConvertTextureWICToDDS(argv[kFilePath]);
+
+	CoUninitialize();
 
 	system("pause");
-
 	return 0;
 }
