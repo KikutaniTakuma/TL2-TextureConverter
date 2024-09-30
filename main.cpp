@@ -17,10 +17,10 @@ enum Argument {
 };
 
 
-int main(int32_t argc, char* argv[]) {
+int main([[maybe_unused]] int32_t argc, char* argv[]) {
 	assert(argc <= kNumArgument);
 
-	HRESULT hr = CoInitializeEx(nullptr, COINIT_MULTITHREADED);
+	[[maybe_unused]] HRESULT hr = CoInitializeEx(nullptr, COINIT_MULTITHREADED);
 	assert(SUCCEEDED(hr));
 
 	TextureConverter converter;

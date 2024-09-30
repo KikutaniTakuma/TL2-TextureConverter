@@ -15,7 +15,7 @@ void TextureConverter::ConvertTextureWICToDDS(const std::filesystem::path& fileP
 }
 
 void TextureConverter::LoadWICTextureFromFile_(const std::filesystem::path& filePath) {
-	auto hr = DirectX::LoadFromWICFile(filePath.wstring().c_str(), DirectX::WIC_FLAGS_NONE, &metaData_, scratchImage_);
+	[[maybe_unused]] auto hr = DirectX::LoadFromWICFile(filePath.wstring().c_str(), DirectX::WIC_FLAGS_NONE, &metaData_, scratchImage_);
 	assert(SUCCEEDED(hr));
 }
 
@@ -24,7 +24,7 @@ void TextureConverter::SaveDDSTextureToFile_() {
 	
 	std::wstring outputFilePath = filePath_.parent_path().wstring() + L"/" + filePath_.stem().wstring() + L".dds";
 
-	auto hr = DirectX::SaveToDDSFile(
+	[[maybe_unused]] auto hr = DirectX::SaveToDDSFile(
 		scratchImage_.GetImages(),
 		scratchImage_.GetImageCount(),
 		metaData_,
