@@ -5,8 +5,8 @@
 
 void TextureConverter::ConvertTextureWICToDDS(
 	const std::filesystem::path& filePath,
-	int numOpotions = 0,
-	char* options[] = nullptr
+	int numOpotions,
+	char* options[]
 ) {
 	filePath_ = filePath;
 
