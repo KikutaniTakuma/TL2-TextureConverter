@@ -25,10 +25,16 @@ int main([[maybe_unused]] int32_t argc, char* argv[]) {
 
 	TextureConverter converter;
 
-	converter.ConvertTextureWICToDDS(argv[kFilePath]);
-
+	try {
+		converter.ConvertTextureWICToDDS(argv[kFilePath]);
+	}
+	catch (std::exception err) {
+		CoUninitialize();
+		std::cerr << err.what() << std::endl;
+		system("pause");
+		return -1;
+	}
 	CoUninitialize();
 
-	system("pause");
 	return 0;
 }

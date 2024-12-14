@@ -5,6 +5,11 @@
 
 void TextureConverter::ConvertTextureWICToDDS(const std::filesystem::path& filePath) {
 	filePath_ = filePath;
+
+	if (not std::filesystem::exists(filePath)) {
+		throw std::exception(("This file is not exist -> " + filePath_.string()).c_str());
+	}
+
 	std::cout << "Convert file : " << filePath_ << std::endl;
 
 	LoadWICTextureFromFile_(filePath_);
@@ -16,6 +21,9 @@ void TextureConverter::ConvertTextureWICToDDS(const std::filesystem::path& fileP
 
 void TextureConverter::LoadWICTextureFromFile_(const std::filesystem::path& filePath) {
 	[[maybe_unused]] auto hr = DirectX::LoadFromWICFile(filePath.wstring().c_str(), DirectX::WIC_FLAGS_NONE, &metaData_, scratchImage_);
+	if (FAILED(hr)) {
+		throw std::exception("DirectX::LoadFromWICFile failed");
+	}
 	assert(SUCCEEDED(hr));
 }
 
@@ -29,9 +37,13 @@ void TextureConverter::SaveDDSTextureToFile_() {
 		0,
 		mipChain
 	);
+
 	if (SUCCEEDED(result)) {
 		scratchImage_ = std::move(mipChain);
 		metaData_ = scratchImage_.GetMetadata();
+	}
+	else {
+		throw std::exception("DirectX::GenerateMipMaps failed");
 	}
 
 	DirectX::ScratchImage converted;
@@ -47,10 +59,13 @@ void TextureConverter::SaveDDSTextureToFile_() {
 		scratchImage_ = std::move(converted);
 		metaData_ = scratchImage_.GetMetadata();
 	}
+	else {
+		throw std::exception("DirectX::Compress failed");
+	}
 
 	metaData_.format = DirectX::MakeSRGB(metaData_.format);
 	
-	std::wstring outputFilePath = filePath_.parent_path().wstring() + L"/" + filePath_.stem().wstring() + L".dds";
+	std::wstring outputFilePath = std::filesystem::current_path().wstring() + L"/" + filePath_.stem().wstring() + L".dds";
 
 	[[maybe_unused]] auto hr = DirectX::SaveToDDSFile(
 		scratchImage_.GetImages(),
@@ -60,5 +75,7 @@ void TextureConverter::SaveDDSTextureToFile_() {
 		outputFilePath.c_str()
 	);
 
-	assert(SUCCEEDED(hr));
+	if (FAILED(hr)) {
+		throw std::exception("DirectX::SaveToDDSFile failed");
+	}
 }
