@@ -22,7 +22,7 @@ private:
 	void SaveDDSTextureToFile_();
 
 private:
-	DirectX::TexMetadata metaData_;
+	DirectX::TexMetadata metaData_ = {};
 	DirectX::ScratchImage scratchImage_;
 
 	std::filesystem::path filePath_;
