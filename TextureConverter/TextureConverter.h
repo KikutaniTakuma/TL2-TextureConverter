@@ -1,6 +1,7 @@
 #pragma once
 
 #include <filesystem>
+#include <vector>
 
 #include "external/DirectXTex/DirectXTex.h"
 
@@ -15,11 +16,18 @@ public:
 	TextureConverter& operator=(TextureConverter&&) = delete;
 
 public:
-	void ConvertTextureWICToDDS(const std::filesystem::path& filePath);
+	void ConvertTextureWICToDDS(
+		const std::filesystem::path& filePath,
+		int numOpotions = 0,
+		char* options[] = nullptr
+	);
+	static void OutputUsage();
 
 private:
-	void LoadWICTextureFromFile_(const std::filesystem::path& filePath);
-	void SaveDDSTextureToFile_();
+	void LoadWICTextureFromFile_(
+		const std::filesystem::path& filePath
+	);
+	void SaveDDSTextureToFile_(const std::vector<std::string>& options);
 
 private:
 	DirectX::TexMetadata metaData_ = {};

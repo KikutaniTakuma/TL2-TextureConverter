@@ -3,7 +3,11 @@
 
 #include <iostream>
 
-void TextureConverter::ConvertTextureWICToDDS(const std::filesystem::path& filePath) {
+void TextureConverter::ConvertTextureWICToDDS(
+	const std::filesystem::path& filePath,
+	int numOpotions = 0,
+	char* options[] = nullptr
+) {
 	filePath_ = filePath;
 
 	if (not std::filesystem::exists(filePath)) {
@@ -14,9 +18,25 @@ void TextureConverter::ConvertTextureWICToDDS(const std::filesystem::path& fileP
 
 	LoadWICTextureFromFile_(filePath_);
 
-	SaveDDSTextureToFile_();
+	std::vector<std::string> vecOptions;
+	vecOptions.reserve(numOpotions);
+	for (int i = 0; i < numOpotions; ++i) {
+		vecOptions.push_back(options[i]);
+	}
+
+	SaveDDSTextureToFile_(vecOptions);
 
 	std::cout << "Convert completed" << std::endl;
+}
+
+void TextureConverter::OutputUsage() {
+	std::wcout.imbue(std::locale("Japanese"));
+	std::wcout << L"画像ファイルをWIC形式からDDS形式に変換" << std::endl
+		<< std::endl
+		<< L"TextureConverter [ドライブ:][パス][ファイル名]" << std::endl
+		<< std::endl
+		<< L"[ドライブ:][パス][ファイル名]: 変換したいWIC形式の画像ファイルを指定します。" << std::endl
+		<< L"オプション : -ml [任意のミップレベル]" << std::endl;
 }
 
 void TextureConverter::LoadWICTextureFromFile_(const std::filesystem::path& filePath) {
@@ -27,14 +47,24 @@ void TextureConverter::LoadWICTextureFromFile_(const std::filesystem::path& file
 	assert(SUCCEEDED(hr));
 }
 
-void TextureConverter::SaveDDSTextureToFile_() {
+void TextureConverter::SaveDDSTextureToFile_(const std::vector<std::string>& options) {
+	size_t mipLevel = 0;
+
+	for (size_t i = 0; i < options.size(); ++i) {
+		if (std::string(options[i]) == "-ml") {
+			// ミップレベル指定
+			mipLevel = std::stoi(options[i + 1]);
+			break;
+		}
+	}
+
 	DirectX::ScratchImage mipChain;
 	auto result = DirectX::GenerateMipMaps(
 		scratchImage_.GetImages(),
 		scratchImage_.GetImageCount(),
 		scratchImage_.GetMetadata(),
 		DirectX::TEX_FILTER_DEFAULT,
-		0,
+		mipLevel,
 		mipChain
 	);
 

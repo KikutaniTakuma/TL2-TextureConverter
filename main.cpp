@@ -18,7 +18,14 @@ enum Argument {
 
 
 int main([[maybe_unused]] int32_t argc, char* argv[]) {
-	assert(argc <= kNumArgument);
+	if (argc < kNumArgument) {
+		TextureConverter::OutputUsage();
+		system("pause");
+		return 0;
+	}
+
+	int numOptions = argc - kNumArgument;
+	char** options = argv + kNumArgument;
 
 	[[maybe_unused]] HRESULT hr = CoInitializeEx(nullptr, COINIT_MULTITHREADED);
 	assert(SUCCEEDED(hr));
@@ -26,7 +33,7 @@ int main([[maybe_unused]] int32_t argc, char* argv[]) {
 	TextureConverter converter;
 
 	try {
-		converter.ConvertTextureWICToDDS(argv[kFilePath]);
+		converter.ConvertTextureWICToDDS(argv[kFilePath], numOptions, options);
 	}
 	catch (std::exception err) {
 		CoUninitialize();
