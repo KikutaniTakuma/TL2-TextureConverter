@@ -54,6 +54,7 @@ void TextureConverter::SaveDDSTextureToFile_(const std::vector<std::string>& opt
 		if (std::string(options[i]) == "-ml") {
 			// ミップレベル指定
 			mipLevel = std::stoi(options[i + 1]);
+			std::cout << "miplevel : " << mipLevel << std::endl;
 			break;
 		}
 	}
